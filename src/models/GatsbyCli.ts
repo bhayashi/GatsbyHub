@@ -26,19 +26,26 @@ export default class GatsbyCli {
   async installGatsby() {
     // if a gatsby terminal isn't open, create a new terminal. Otherwise, use gatsbyhub terminal
     const activeTerminal = Utilities.getActiveTerminal();
-    activeTerminal.sendText('sudo npm install -g gatsby-cli');
-    // !! check if admin password is required before showing password box
-
-    // Creates a password inputbox when install gatsby button is clicked
-    const inputPassword = await window.showInputBox({
-      password: true,
-      placeHolder: 'Input administrator password',
-    });
-    if (inputPassword !== undefined) activeTerminal.sendText(inputPassword);
-    // if the password is wrong, show inputbox again
-    // else, show terminal
+    // if windows user
+    if (!process.env.USER) {
+      activeTerminal.sendText('npm install -g gatsby-cli');
+    } else {
+      // then it is linux or unnix based environment
+      activeTerminal.sendText('sudo npm install -g gatsby-cli');
+      // Mac and Linux requrie password to install
+      const inputPassword = await window.showInputBox({
+        password: true,
+        placeHolder: 'Input administrator password',
+      });
+      if (inputPassword !== undefined) activeTerminal.sendText(inputPassword);
+      // if the password is wrong, show inputbox again
+      // else, show terminal
+    }
     activeTerminal.show(true);
   }
+  // !! check if admin password is required before showing password box
+
+  // Creates a password inputbox when install gatsby button is clicked
 
   /**  creates a new site when 'Create New Site' button is clicked
    * currently uses default gatsby starter, but uses gatsby new url. see https://www.gatsbyjs.com/docs/gatsby-cli/
@@ -162,6 +169,7 @@ export default class GatsbyCli {
     /** write options to set host, set port, to open site, and to use https
      * gatsby develop only works in the site directory
      * allow user to open folder for their site directory */
+    commands.executeCommand('setContext', 'serverIsRunning', true);
     return null;
   }
 
@@ -174,6 +182,7 @@ export default class GatsbyCli {
     // toggle statusBar so it will developServer if clicked again
     setTimeout(this.toggleStatusBar, 3000);
     window.showInformationMessage('Disposing Gatsby Server on port:8000');
+    commands.executeCommand('setContext', 'serverIsRunning', false);
   }
 
   // builds and packages Gatsby site
