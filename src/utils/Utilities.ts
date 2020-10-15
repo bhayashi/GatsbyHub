@@ -60,7 +60,6 @@ export default class Utilities {
 
   static async checkIfGatsbySiteInitiated(root: string): Promise<boolean> {
     const uri = Uri.file(root);
-
     const data = await workspace.fs.readDirectory(uri);
 
     // if workspace is empty, that means a gatsby site has not been initiated
@@ -98,7 +97,7 @@ export default class Utilities {
     if (currWorkspace === undefined) return currWorkspace;
 
     const uri = Uri.file(currWorkspace[0].uri.path);
-    return uri.path;
+    return uri.path.replace(/\s/g, '\\ ');
   }
 
   static async openGraphiQL() {
