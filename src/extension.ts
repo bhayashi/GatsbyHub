@@ -13,7 +13,6 @@ export function activate(context: ExtensionContext) {
   const { registerCommand } = commands;
   const { subscriptions } = context;
   const gatsbyCli = new GatsbyCli();
-
   subscriptions.push(
     registerCommand('gatsbyhub.installGatsby', gatsbyCli.installGatsby)
   );
